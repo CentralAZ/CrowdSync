@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Christmas @ CentralAZ</title>
+	<link href="css/crowdsync.css" type="text/css" rel="stylesheet"/>
+</head>
+<body class="tree">
+	<div class="splash">
+		<canvas id="main-screen"></canvas>
+	</div>
+	<div class="overlay"></div>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="scripts/crowdSync.0.6.5.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			var cs = new CrowdSync({
+				debugging: false,
+				randomizeColor: true,
+				shouldPlayAudio: true,
+				audioStartOffset: -10000,
+				audioFileName: 'click-track2.mp3',
+				shouldCountDown: true,
+				countDownLength: 2700000,
+				useCanvas: true,
+				displaySplash: true,
+				campus: 1
+			});
+			cs.start(20);
+		});
+	</script>
+</body>
+</html>

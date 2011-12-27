@@ -1,0 +1,179 @@
+html {
+	-webkit-text-size-adjust: none;
+	background: #000;
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	padding: 0px;
+	margin: 0px;
+	font-family: Helvetica, Arial, Sans-Serif;
+	color: #fff;
+	font-size: 24px;
+	background: #000;	
+}
+
+body.tree {
+	background: #051b32 url(../images/stripes.png);
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+}
+
+.splash {
+	background: url(../images/luminous1280x768.png) no-repeat center top;
+}
+
+.count-down {
+	font-size: 60px;
+	position: absolute;
+	bottom: 60px;
+	right: 60px;
+	color: #fff;
+}
+
+.main-screen {
+	-moz-box-shadow:inset 0 0 10px #000000;
+	-webkit-box-shadow:inset 0 0 10px #000000;
+	box-shadow:inset 0 0 10px #000000;
+	background-position: center 20% !important;
+	background-repeat: no-repeat !important;
+}
+
+div.main-screen {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	height: 105%;
+	padding: 30px;
+}
+
+canvas#main-screen {
+	width: 1280px;
+	height: 768px;
+	margin: 0px auto;
+	display: block;
+}
+
+.overlay {
+	position: absolute;
+	z-index: 5;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: none;
+}
+
+.mobile .overlay {
+	background-image: url(../images/merry-christmas2.png), url(../images/stripes.png);
+	background-repeat: no-repeat, repeat;
+	background-position: top center, top left;
+	min-height: 480px;
+	min-width: 320px;
+	height: 100%;
+	width: 100%;
+}
+
+.tree .overlay {
+	background: #000 none;
+}
+
+#grid-16, #grid-64 {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 0px;
+	margin: 0px;
+}
+
+#grid-16 > li, #grid-64 > li {
+	display: block;
+	float: left;
+	text-align: center;
+}
+
+#grid-16 > li {
+	height: 25%;
+	width: 25%;
+}
+
+#grid-64 > li {
+	height: 12.5%;
+	width: 12.5%;
+}
+
+#debug {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	height: 400px;
+	width: 500px;
+	z-index: 2;
+	color: #00CD00;
+	font-family: "Courier New", Courier;
+	font-size: 12px;
+	overflow: hidden;
+}
+
+.a {
+	background: #ff0000;
+	color: #ff0000;
+}
+
+.logo-a {
+	background-image: url(../images/logo-a.png) !important;
+}
+
+.b {
+	background: #0040FF;
+	color: #0040FF;
+}
+
+.logo-b {
+	background-image: url(../images/logo-b.png) !important;
+}
+
+.c {
+	background: #00FF40;
+	color: #00FF40;
+}
+
+.logo-c {
+	background-image: url(../images/logo-c.png) !important;
+}
+
+.d {
+	background: #F2FF00;
+	color: #F2FF00;
+}
+
+.logo-d {
+	background-image: url(../images/logo-d.png) !important;
+}
+
+.off {
+	background: #000;
+}
+
+@media screen and (orientation: portrait) and (max-device-width: 960px) {
+	.count-down {
+		top: auto;
+		bottom: 20px;
+		right: 20px;
+	}
+}
+
+@media screen and (orientation: landscape) and (max-device-width: 960px) {
+	.count-down {
+		bottom: auto;
+		right: 20px;
+		top: 20px;
+	}
+}

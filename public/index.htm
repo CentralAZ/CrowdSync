@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Christmas @ CentralAZ</title>
+	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=320, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0"/>
+	<meta content="text/html;​charset=utf-8" http-equiv="Content-Type"/>
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	
+	<link rel="apple-touch-icon" href="images/retina-icon.png">
+	<link rel="apple-touch-startup-image" href="images/startup.jpg"/>
+	<link href="css/crowdsync.css" type="text/css" rel="stylesheet"/>
+</head>
+<body class="mobile">
+	<div class="main-screen off"></div>
+	<div class="overlay"></div>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="scripts/crowdSync.0.6.5.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			var supportsOrientation = 'onorientationchange' in window,
+				orientationEvent = supportsOrientation ? 'orientationchange' : 'resize';
+				
+			window.addEventListener(orientationEvent, function() {
+				setTimeout(function() {
+					hideScrollbar();
+				}, 500);
+			}, false);
+			
+			function hideScrollbar() {
+				if (window.scrollTo) {
+					window.scrollTo(0, 1);
+				}
+			}
+			
+			var cs = new CrowdSync({
+				debugging: false,
+				shouldCountDown: true,
+				countDownLength: 1800000,
+				displayLogo: true,
+				campus: 1
+			});
+			cs.start(20);
+			
+			hideScrollbar();
+		});
+	</script>
+</body>
+</html>
