@@ -1,19 +1,18 @@
+
+/**
+ * CrowdSync version 0.6.5
+ * (c) 2011 Central Christian Church - www.centralaz.com
+ * CrowdSync may be freely distributed under the MIT license.
+ * For all details and documentation head to https://github.com/centralaz/crowdsync
+*/
+
 (function() {
-  /**
-   * CrowdSync version 0.6.0
-   * (c) 2011 Central Christian Church - www.centralaz.com
-   * CrowdSync may be freely distributed under the MIT license.
-   * For all details and documentation head to http://github.com/centralaz/crowdsync
-   */
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
   window.CrowdSync = (function() {
+
     function CrowdSync(options) {
-      if (options == null) {
-        options = {};
-      }
-      if (options) {
-        this.settings = options;
-      }
+      if (options == null) options = {};
+      if (options) this.settings = options;
       this.initSettings(options);
       if (this.settings.useCanvas === false) {
         this.loadNotesFromDom();
@@ -22,6 +21,7 @@
       }
       this.initDocument();
     }
+
     CrowdSync.prototype.initSettings = function(options) {
       this.deltaOffset = Number.MAX_VALUE;
       this.playHeadIndex = 0;
@@ -46,30 +46,31 @@
         return this.testAudio();
       }
     };
+
     CrowdSync.prototype.testAudio = function() {
-      var audioAvailable, request;
-      if (typeof webkitAudioContext === 'undefined') {
-        return;
-      }
+      var audioAvailable, request,
+        _this = this;
+      if (typeof webkitAudioContext === 'undefined') return;
       this.audioContext = new webkitAudioContext();
       this.source = this.audioContext.createBufferSource();
       this.processor = this.audioContext.createJavaScriptNode(2048);
-      audioAvailable = __bind(function(event) {
-        return this.processor.onaudioprocess = null;
-      }, this);
+      audioAvailable = function(event) {
+        return _this.processor.onaudioprocess = null;
+      };
       this.source.connect(this.processor);
       this.processor.connect(this.audioContext.destination);
       request = new XMLHttpRequest();
       request.open('GET', this.settings.audioFileName, true);
       request.responseType = 'arraybuffer';
-      request.onload = __bind(function() {
-        this.source.buffer = this.audioContext.createBuffer(request.response, false);
-        this.source.looping = true;
-        this.processor.onaudioprocess = audioAvailable;
-        return this.source.noteOn(0);
-      }, this);
+      request.onload = function() {
+        _this.source.buffer = _this.audioContext.createBuffer(request.response, false);
+        _this.source.looping = true;
+        _this.processor.onaudioprocess = audioAvailable;
+        return _this.source.noteOn(0);
+      };
       return request.send();
     };
+
     CrowdSync.prototype.initDocument = function() {
       var note, _i, _len, _ref, _results;
       if (this.settings.displayCountDown === true) {
@@ -88,19 +89,27 @@
         return _results;
       }
     };
+
     CrowdSync.prototype.loadNotesFromDom = function() {
       var addNote, note, that, _i, _len, _ref, _results;
       addNote = function(note, array) {
-        if ($.inArray(note, array) === -1) {
-          return array.push(note);
-        }
+        if ($.inArray(note, array) === -1) return array.push(note);
       };
       if (this.settings.randomizeColor === false) {
         _ref = this.settings.notes;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           note = _ref[_i];
-          _results.push($('.main-screen').hasClass(note) ? (addNote(note, this.clientNotes), this.settings.debugging === false ? $('.main-screen').text('') : void 0) : void 0);
+          if ($('.main-screen').hasClass(note)) {
+            addNote(note, this.clientNotes);
+            if (this.settings.debugging === false) {
+              _results.push($('.main-screen').text(''));
+            } else {
+              _results.push(void 0);
+            }
+          } else {
+            _results.push(void 0);
+          }
         }
         return _results;
       } else {
@@ -111,59 +120,62 @@
           theNote = that.settings.notes[i];
           $(this).addClass(theNote);
           addNote(theNote, that.clientNotes);
-          if (that.settings.debugging === true) {
-            return $(this).text(theNote);
-          }
+          if (that.settings.debugging === true) return $(this).text(theNote);
         });
       }
     };
+
     CrowdSync.prototype.log = function(message) {
       if (typeof console !== 'undefined' && console.log) {
         return console.log(message);
       }
     };
+
     CrowdSync.prototype.filterNotes = function() {
-      this.currentTrack.ticks = $.grep(this.currentTrack.ticks, __bind(function(element, index) {
+      var _this = this;
+      this.currentTrack.ticks = $.grep(this.currentTrack.ticks, function(element, index) {
         var hasNotes;
-        hasNotes = $.grep(element.notes, __bind(function(note, i) {
+        hasNotes = $.grep(element.notes, function(note, i) {
           var result;
-          result = $.inArray(note, this.clientNotes);
+          result = $.inArray(note, _this.clientNotes);
           return result > -1;
-        }, this));
+        });
         return hasNotes.length > 0;
-      }, this));
+      });
       if (this.settings.debugging === true) {
         this.log('Filtering out mismatched notes...');
         return this.log(this.currentTrack);
       }
     };
+
     CrowdSync.prototype.convertToClientTime = function() {
+      var _this = this;
       if (this.settings.debugging === true) {
         this.log("Current start time: " + this.currentTrack.startTime);
       }
       this.currentTrack.startTime = this.currentTrack.startTime + this.deltaOffset;
       this.currentTrack.countDownStartTime = this.currentTrack.startTime - this.settings.countDownLength;
-      $.each(this.currentTrack.ticks, __bind(function(index, value) {
-        return value.time += this.currentTrack.startTime;
-      }, this));
+      $.each(this.currentTrack.ticks, function(index, value) {
+        return value.time += _this.currentTrack.startTime;
+      });
       if (this.settings.debugging === true) {
         this.log('Converting relative timecodes to client time...');
         return this.log(this.currentTrack);
       }
     };
+
     CrowdSync.prototype.formatCountDownTime = function(seconds) {
       var minutes;
       minutes = Math.floor(seconds / 60) % 60;
       seconds = seconds % 60;
       if (minutes > 0) {
-        if (seconds.toString().length === 1) {
-          seconds = "0" + seconds;
-        }
+        if (seconds.toString().length === 1) seconds = "0" + seconds;
         return "" + minutes + ":" + seconds;
       } else {
         return seconds;
       }
     };
+
     CrowdSync.prototype.writeTimerInfo = function(delta) {
       var $ul;
       $ul = $('<ul/>');
@@ -173,88 +185,83 @@
       $ul.append("<li>Min Delta: " + this.deltaOffset + "</li>");
       return $ul.prependTo('#debug');
     };
+
     CrowdSync.prototype.start = function(count) {
-      if (this.debugging === true) {
-        $('<div id="debug"/>').appendTo('body');
-      }
+      var _this = this;
+      if (this.debugging === true) $('<div id="debug"/>').appendTo('body');
       this.deltaCount = count;
-      return this.deltaTimer = setInterval(__bind(function() {
-        return this.getDelta();
-      }, this), 500);
+      return this.deltaTimer = setInterval(function() {
+        return _this.getDelta();
+      }, 500);
     };
+
     CrowdSync.prototype.getDelta = function() {
+      var _this = this;
       return $.ajax({
-        url: '/Arena/WebServices/Custom/Cccev/Server/ChristmasService.asmx/GetTime',
+        url: '/CrowdSync.asmx/GetTime',
         type: 'GET',
         data: '',
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
-        success: __bind(function(result) {
+        success: function(result) {
           var delta;
-          this.serverTime = result.d;
-          this.clientTime = new Date();
-          delta = this.clientTime.getTime() - this.serverTime;
-          if (delta < this.deltaOffset) {
-            this.deltaOffset = delta;
-          }
-          if (this.settings.debugging === true) {
-            this.writeTimerInfo(delta);
-          }
-          if (this.settings.serverCheckCount++ >= this.deltaCount) {
-            clearTimeout(this.deltaTimer);
-            this.loadNextTrack();
+          _this.serverTime = result.d;
+          _this.clientTime = new Date();
+          delta = _this.clientTime.getTime() - _this.serverTime;
+          if (delta < _this.deltaOffset) _this.deltaOffset = delta;
+          if (_this.settings.debugging === true) _this.writeTimerInfo(delta);
+          if (_this.settings.serverCheckCount++ >= _this.deltaCount) {
+            clearTimeout(_this.deltaTimer);
+            _this.loadNextTrack();
           }
           return false;
-        }, this),
-        error: __bind(function(result, status, error) {
-          clearTimeout(this.deltaTimer);
-          if (this.settings.debugging === true) {
-            this.log(result.responseText);
-          }
+        },
+        error: function(result, status, error) {
+          clearTimeout(_this.deltaTimer);
+          if (_this.settings.debugging === true) _this.log(result.responseText);
           return false;
-        }, this)
+        }
       });
     };
+
     CrowdSync.prototype.loadNextTrack = function() {
-      if (this.settings.debugging === true) {
-        this.log('Loading next track...');
-      }
+      var _this = this;
+      if (this.settings.debugging === true) this.log('Loading next track...');
       return $.ajax({
-        url: "/Arena/WebServices/Custom/Cccev/Server/ChristmasService.asmx/GetNextStartByCampusID?campusID=" + this.settings.campus,
+        url: "/CrowdSync.asmx/GetNextStartByCampusID?campusID=" + this.settings.campus,
         type: 'GET',
         data: '',
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
-        success: __bind(function(result) {
+        success: function(result) {
           var adjustedTime, endTime, serverTime, startTime;
           startTime = result.d.startTime;
-          endTime = startTime + this.currentTrack.ticks[this.currentTrack.ticks.length - 1].time + this.deltaOffset;
-          this.currentTrack.startTime = startTime;
-          this.currentTrack.endTime = endTime;
-          if (this.settings.debugging === true) {
-            serverTime = new Date(this.currentTrack.startTime);
+          endTime = startTime + _this.currentTrack.ticks[_this.currentTrack.ticks.length - 1].time + _this.deltaOffset;
+          _this.currentTrack.startTime = startTime;
+          _this.currentTrack.endTime = endTime;
+          if (_this.settings.debugging === true) {
+            serverTime = new Date(_this.currentTrack.startTime);
             $('#debug').prepend("<h3>Server Start Time: " + (serverTime.toTimeString()) + "." + (serverTime.getMilliseconds()) + "</h3>");
           }
-          this.filterNotes();
-          this.convertToClientTime();
-          if (this.settings.debugging === true) {
-            adjustedTime = new Date(this.currentTrack.startTime);
+          _this.filterNotes();
+          _this.convertToClientTime();
+          if (_this.settings.debugging === true) {
+            adjustedTime = new Date(_this.currentTrack.startTime);
             $('#debug').prepend("<h3>Adjusted Start Time: " + (adjustedTime.toTimeString()) + "." + (adjustedTime.getMilliseconds()) + "</h3>");
-            $('#debug').prepend("Current Notes: " + (this.clientNotes.join(', ')));
+            $('#debug').prepend("Current Notes: " + (_this.clientNotes.join(', ')));
           }
-          this.countDownTimer = setInterval(__bind(function() {
-            return this.countDown();
-          }, this), this.settings.cycleLength);
+          _this.countDownTimer = setInterval(function() {
+            return _this.countDown();
+          }, _this.settings.cycleLength);
           return false;
-        }, this),
-        error: __bind(function(result, status, error) {
-          if (this.settings.debugging === true) {
-            this.log(result.responseText);
-          }
+        },
+        error: function(result, status, error) {
+          if (_this.settings.debugging === true) _this.log(result.responseText);
           return false;
-        }, this)
+        }
       });
     };
+
     CrowdSync.prototype.countDown = function() {
       var audioPlayTime, remainingMilliseconds, remainingSeconds, theTime;
       theTime = new Date();
@@ -262,15 +269,11 @@
         remainingMilliseconds = this.currentTrack.startTime - theTime.getTime();
         audioPlayTime = this.currentTrack.startTime + this.settings.audioStartOffset + this.settings.cycleLength;
         if (this.settings.shouldPlayAudio === true && audioPlayTime <= theTime && this.playingAudio === false) {
-          if (this.settings.debugging) {
-            this.log('Playing audio...');
-          }
+          if (this.settings.debugging) this.log('Playing audio...');
           this.audio.play();
           this.playingAudio = true;
         }
-        if (this.settings.debugging) {
-          $('.main-screen').text(remainingMilliseconds);
-        }
+        if (this.settings.debugging) $('.main-screen').text(remainingMilliseconds);
         if (remainingMilliseconds <= 0) {
           if (this.settings.displayLogo === true) {
             $('.main-screen').removeClass("logo-" + (this.settings.notes.join(' logo-')));
@@ -292,18 +295,20 @@
         }
       }
     };
+
     CrowdSync.prototype.play = function() {
-      var func;
-      if (this.settings.debugging === true) {
-        this.log("Starting tick...");
-      }
+      var func,
+        _this = this;
+      if (this.settings.debugging === true) this.log("Starting tick...");
       func = this.settings.useCanvas === false ? this.paintDom : this.paintCanvas;
-      return this.cycleTimer = setInterval(__bind(function() {
-        return this.tick(func);
-      }, this), this.settings.cycleLength);
+      return this.cycleTimer = setInterval(function() {
+        return _this.tick(func);
+      }, this.settings.cycleLength);
     };
+
     CrowdSync.prototype.tick = function(callback) {
-      var currentTick, theTime;
+      var currentTick, theTime,
+        _this = this;
       theTime = new Date();
       currentTick = this.currentTrack.ticks[this.playHeadIndex];
       if ((currentTick != null) && theTime >= currentTick.time) {
@@ -311,26 +316,21 @@
         return this.playHeadIndex += 1;
       } else if (theTime > this.currentTrack.endTime) {
         clearTimeout(this.cycleTimer);
-        if (this.settings.useCanvas === true) {
-          this.clearCanvas();
-        }
-        if (this.settings.debugging === true) {
-          this.log('Song has ended...');
-        }
+        if (this.settings.useCanvas === true) this.clearCanvas();
+        if (this.settings.debugging === true) this.log('Song has ended...');
         if (this.settings.shouldPlayAudio === true) {
-          if (this.settings.debugging === true) {
-            'Stopping audio track...';
-          }
-          setTimeout(__bind(function() {
-            this.audio.pause();
-            return this.playingAudio = false;
-          }, this), 1000);
+          if (this.settings.debugging === true) 'Stopping audio track...';
+          setTimeout(function() {
+            _this.audio.pause();
+            return _this.playingAudio = false;
+          }, 1000);
         }
         return setTimeout(function() {
           return $('.overlay').fadeIn('slow');
         }, 3000);
       }
     };
+
     CrowdSync.prototype.paintDom = function(theTime, theTick) {
       var selector;
       selector = "." + (theTick.notes.join(', .'));
@@ -339,11 +339,10 @@
         return $(selector).addClass('off');
       }, theTick.duration);
     };
+
     CrowdSync.prototype.initCanvas = function() {
       this.clientNotes = this.settings.notes;
-      if (this.settings.debugging) {
-        this.log('Initializing canvas...');
-      }
+      if (this.settings.debugging) this.log('Initializing canvas...');
       this.canvasWidth = 1240;
       this.canvasHeight = 728;
       this.canvas = document.getElementById('main-screen');
@@ -353,11 +352,11 @@
       this.lights = [];
       return this.plotTree();
     };
+
     CrowdSync.prototype.plotTree = function() {
-      var colSpacing, cols, i, index, j, noteName, rowSpacing, widthFactor, xOffset, xPos, yOffset, yPos;
-      if (this.settings.debugging) {
-        this.log('Plotting points...');
-      }
+      var colSpacing, cols, i, index, j, noteName, rowSpacing, widthFactor, xOffset, xPos, yOffset, yPos,
+        _this = this;
+      if (this.settings.debugging) this.log('Plotting points...');
       colSpacing = 17;
       rowSpacing = colSpacing;
       xOffset = Math.ceil(this.canvasWidth / 2);
@@ -391,22 +390,23 @@
           });
         }
       }
-      if (this.settings.debugging === true) {
-        this.log(this.lights);
-      }
-      return this.canvasTimer = setInterval(__bind(function() {
-        return this.paintLights();
-      }, this), this.settings.cycleLength);
+      if (this.settings.debugging === true) this.log(this.lights);
+      return this.canvasTimer = setInterval(function() {
+        return _this.paintLights();
+      }, this.settings.cycleLength);
     };
+
     CrowdSync.prototype.clearCanvas = function() {
       clearTimeout(this.canvasTimer);
       return this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
     };
+
     CrowdSync.prototype.nudge = function(n) {
       var d;
       d = Math.floor(Math.random() * 10);
       return n + (Math.random() > .5 ? -d : d);
     };
+
     CrowdSync.prototype.nudgeBlur = function(n, center, radius) {
       var d;
       d = Math.random() * 100 > 30 ? 1 : 0;
@@ -419,20 +419,21 @@
       }
       return n;
     };
+
     CrowdSync.prototype.paintCanvas = function(theTime, theTick) {
-      var note, _i, _len, _ref;
+      var note, _i, _len, _ref,
+        _this = this;
       _ref = theTick.notes;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         note = _ref[_i];
-        if (this.settings.debugging === true) {
-          this.log(note);
-        }
+        if (this.settings.debugging === true) this.log(note);
         this.canvasColors[note].a = 0.81;
       }
-      return setTimeout(__bind(function() {
-        return this.lightsOut(theTick);
-      }, this), theTick.duration);
+      return setTimeout(function() {
+        return _this.lightsOut(theTick);
+      }, theTick.duration);
     };
+
     CrowdSync.prototype.paintLights = function() {
       var color, gradient, light, radians, radius, _i, _len, _ref, _results;
       this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
@@ -456,16 +457,19 @@
       }
       return _results;
     };
+
     CrowdSync.prototype.lightsOut = function(theTick) {
-      var fadeTimer;
+      var fadeTimer,
+        _this = this;
       if (this.settings.debugging === true) {
         "Turning off '" + (theTick.notes.join(', ')) + "'";
       }
-      fadeTimer = setInterval(__bind(function() {
-        return this.fadeLights(theTick);
-      }, this), this.settings.cycleLength);
+      fadeTimer = setInterval(function() {
+        return _this.fadeLights(theTick);
+      }, this.settings.cycleLength);
       return theTick.fadeTimer = fadeTimer;
     };
+
     CrowdSync.prototype.fadeLights = function(theTick) {
       var note, _i, _len, _ref, _results;
       _ref = theTick.notes;
@@ -473,10 +477,16 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         note = _ref[_i];
         this.canvasColors[note].a -= .5;
-        _results.push(this.canvasColors[note].a <= 0.05 ? (this.canvasColors[note].a = 0, clearTimeout(theTick.fadeTimer)) : void 0);
+        if (this.canvasColors[note].a <= 0.05) {
+          this.canvasColors[note].a = 0;
+          _results.push(clearTimeout(theTick.fadeTimer));
+        } else {
+          _results.push(void 0);
+        }
       }
       return _results;
     };
+
     CrowdSync.prototype.canvasColors = {
       a: {
         r: 255,
@@ -503,6 +513,7 @@
         a: 0
       }
     };
+
     CrowdSync.prototype.currentTrack = {
       startTime: 123578916,
       endTime: 12345667,
@@ -1682,6 +1693,9 @@
         }
       ]
     };
+
     return CrowdSync;
+
   })();
+
 }).call(this);

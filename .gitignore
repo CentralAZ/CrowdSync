@@ -1,4 +1,4 @@
 /.DS_Store
 /._*
-/*.mp3
-/*.ogg
+/public/*.mp3
+/public/*.ogg

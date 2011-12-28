@@ -1,8 +1,8 @@
 ###*
- * CrowdSync version 0.6.0
+ * CrowdSync version 0.6.5
  * (c) 2011 Central Christian Church - www.centralaz.com
  * CrowdSync may be freely distributed under the MIT license.
- * For all details and documentation head to http://github.com/centralaz/crowdsync
+ * For all details and documentation head to https://github.com/centralaz/crowdsync
  ###
 class window.CrowdSync
 	constructor: (options = {}) -> 
@@ -145,7 +145,7 @@ class window.CrowdSync
 	# Pings the server to check the current time
 	getDelta: ->
 		$.ajax
-			url: '/Arena/WebServices/Custom/Cccev/Server/ChristmasService.asmx/GetTime'
+			url: '/CrowdSync.asmx/GetTime'
 			type: 'GET'
 			data: ''
 			contentType: 'application/json; charset=utf-8'
@@ -170,7 +170,7 @@ class window.CrowdSync
 	loadNextTrack: ->
 		if @settings.debugging is true then @log('Loading next track...')
 		$.ajax
-			url: "/Arena/WebServices/Custom/Cccev/Server/ChristmasService.asmx/GetNextStartByCampusID?campusID=#{@settings.campus}"
+			url: "/CrowdSync.asmx/GetNextStartByCampusID?campusID=#{@settings.campus}"
 			type: 'GET'
 			data: ''
 			contentType: 'application/json; charset=utf-8'
@@ -212,7 +212,6 @@ class window.CrowdSync
 				@audio.play()
 				@playingAudio = true
 			
-			#@count = remainingSeconds
 			if @settings.debugging then $('.main-screen').text(remainingMilliseconds)
 			if remainingMilliseconds <= 0
 				if @settings.displayLogo is true then $('.main-screen').removeClass("logo-#{@settings.notes.join(' logo-')}")

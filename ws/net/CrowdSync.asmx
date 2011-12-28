@@ -1,20 +1,4 @@
-<%@ WebService Class="ChristmasService" Language="C#" %>
-/**********************************************************************
-* Description:	Christmas Player
-* Created By:	Nick Airdo @ Central Christian Church of the East Valley
-*				Jason Offutt @ Central Christian Church of the East Valley
-* Date Created:	8/1/2011 02:12:43 PM
-*
-* $Workfile: CrowdSync.asmx $
-* $Revision: 1 $ 
-* $Header: /trunk/CrowdSync/CrowdSync/ws/net/CrowdSync.asmx   1   2011-09-01 11:36:35-07:00   JasonO $
-* 
-* $Log: /trunk/CrowdSync/CrowdSync/ws/net/CrowdSync.asmx $
-* 
-* Revision: 1   Date: 2011-09-01 18:36:35Z   User: JasonO 
-* 
-* Revision: 5   Date: 2011-08-04 23:41:57Z   User: nicka 
-**********************************************************************/
+<%@ WebService Class="CrowdSync" Language="C#" %>
 using System;
 using System.ComponentModel;
 using System.Web.Script.Services;
@@ -24,7 +8,7 @@ using System.Web.Services;
 [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 [ToolboxItem(false)]
 [ScriptService]
-public class ChristmasService : WebService
+public class CrowdSync : WebService
 {
     [WebMethod]
     [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true)]
