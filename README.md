@@ -3,6 +3,7 @@
 CrowdSync is an open source project that will synchronize many devices to perform in time with each other to a musical track.
 
 Read through Nick and Jason's blog posts for a more detailed technical explanation:
+
 * [Nick's blog](http://codersforchrist.com/cs/blogs/nick/archive/2011/12/24/Control-Mobile-Phones-During-Worship-Experience.aspx)
 * [Jason's blog](http://jsondata.tumblr.com/post/14874000238/crowdsync)
 
